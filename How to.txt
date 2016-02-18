@@ -1,0 +1,17 @@
+RPC settings
+  Line 59
+    Define server location, RPC port, username and password
+    
+Exchange rate
+  Line 64
+    Define currency used when displaying exchange rate
+    
+Network interface
+  Line 163 and 164
+    Define network interface used to display IP
+    
+Other information can be displayed by changing variables between lines 87 and 102
+    
+
+    
+    
