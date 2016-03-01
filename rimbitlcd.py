@@ -28,6 +28,8 @@ import requests
 import math
 import urllib2
 import simplejson
+import httplib
+from urlparse import urlparse
 
 # Define GPIO to LCD mapping
 LCD_RS = 26
@@ -121,42 +123,60 @@ def main():
     else:
       amount = str(balance)
 
-    #Test state of API server
-    hostname = "coinmarketcap-nexuist.rhcloud.com"
+    #Test Internet connection  
+    hostname = "google.com"
     response = os.system("ping -c 1 " + hostname)
     if response == 0:
-      #Find current trading price of RBT
-      coincap = url = "http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price"
-      req = urllib2.Request(url)
-      opener = urllib2.build_opener()
-      f = opener.open(req)
-      json = simplejson.load(f)
 
-      if currency == "usd":
-        abv = " USD"
-        price = json.get('usd')
-      elif currency == "eur":
-        abv = " EUR"
-        price = json.get('eur')
-      elif currency == "cny":
-        abv = " CNY"
-        price = json.get('cny')
-      elif currency == "cad":
-        abv = " CAD"
-        price = json.get('cad')
-      elif currency == "rub":
-        abv = " RUB"
-        price = json.get('rub')
-      elif currency == "btc":
-        abv = " BTC"
-        price = json.get('btc')
-      else:
-        abv = " ???"
-        price = "Incorrect Currency"
+      #Check API Server Status
+      def checkUrl(url):
+        p = urlparse(url)
+        conn = httplib.HTTPConnection(p.netloc)
+        conn.request('HEAD', p.path)
+        resp = conn.getresponse()
+        return resp.status < 400
+
+      if __name__ == '__main__':
+        api = checkUrl('http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price')
+        if api == True:
+ 
+          #Find current trading price of RBT
+          coincap = url = "http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price"
+          req = urllib2.Request(url)
+          opener = urllib2.build_opener()
+          f = opener.open(req)
+          json = simplejson.load(f)
+    
+          if currency == "usd":
+            abv = " USD"
+            price = json.get('usd')
+          elif currency == "eur":
+            abv = " EUR"
+            price = json.get('eur')
+          elif currency == "cny":
+            abv = " CNY"
+            price = json.get('cny')
+          elif currency == "cad":
+            abv = " CAD"
+            price = json.get('cad')
+          elif currency == "rub":
+            abv = " RUB"
+            price = json.get('rub')
+          elif currency == "btc":
+            abv = " BTC"
+            price = json.get('btc')
+          else:
+            abv = " ???"
+            price = "Incorrect Currency"
+
+        else:
+          abv = " "
+          price = "API DOWN"
+          
 
     else:
       abv = " "
-      price = "ERROR"
+      price = "Check WAN"
 
     #Find IP address of eth0
     #Change to match active network interface  
