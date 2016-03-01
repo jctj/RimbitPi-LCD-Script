@@ -178,10 +178,10 @@ def main():
       abv = " "
       price = "Check WAN"
 
-    #Find IP address of eth0
-    #Change to match active network interface  
-    ni.ifaddresses('eth0')
-    ip = ni.ifaddresses('eth0')[2][0]['addr']
+    #Find IP address of acctive network interface
+    nic = ni.gateways()['default'][ni.AF_INET][1]
+    ni.ifaddresses(nic)
+    ip = ni.ifaddresses(nic)[2][0]['addr']
     
     lcd_init()
 
