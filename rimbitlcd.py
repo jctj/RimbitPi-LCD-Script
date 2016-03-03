@@ -129,15 +129,19 @@ def main():
     if response == 0:
 
       #Check API Server Status
-      def checkUrl(url):
-        p = urlparse(url)
-        conn = httplib.HTTPConnection(p.netloc)
-        conn.request('HEAD', p.path)
-        resp = conn.getresponse()
-        return resp.status < 400
-
-      if __name__ == '__main__':
-        api = checkUrl('http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price')
+      user_agent = 'Mozilla/20.0.1 (compatible; MSIE 5.5; Windows NT)'
+      headers = { 'User-Agent':user_agent }
+      link = 'http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price'
+      req = Request(link, headers = headers)
+      try:
+             page_open = urlopen(req)
+      except HTTPError, e:
+              api = False
+      except URLError, e:
+             api = False
+      else:
+              api = True
+              
         if api == True:
  
           #Find current trading price of RBT
