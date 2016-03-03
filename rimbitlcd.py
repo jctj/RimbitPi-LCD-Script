@@ -27,6 +27,7 @@ import netifaces as ni
 import requests
 import math
 import urllib2
+from urllib2 import Request, urlopen, HTTPError, URLError
 import simplejson
 import httplib
 from urlparse import urlparse
@@ -142,7 +143,7 @@ def main():
       else:
           api = True
               
-        if api == True:
+      if api == True:
  
           #Find current trading price of RBT
           coincap = url = "http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price"
@@ -173,9 +174,9 @@ def main():
             abv = " ???"
             price = "Incorrect Currency"
 
-        else:
-          abv = " "
-          price = "API DOWN"
+      else:
+       abv = " "
+       price = "API DOWN"
           
 
     else:
