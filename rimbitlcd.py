@@ -136,11 +136,11 @@ def main():
       try:
              page_open = urlopen(req)
       except HTTPError, e:
-              api = False
+             api = False
       except URLError, e:
              api = False
       else:
-              api = True
+             api = True
               
         if api == True:
  
