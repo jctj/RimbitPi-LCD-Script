@@ -124,7 +124,7 @@ def main():
       amount = str(balance)
 
     #Test Internet connection  
-    hostname = "google.com"
+    hostname = "coinmarketcap-nexuist.rhcloud.com"
     response = os.system("ping -c 1 " + hostname)
     if response == 0:
 
