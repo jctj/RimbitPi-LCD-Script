@@ -134,13 +134,13 @@ def main():
       link = 'http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price'
       req = Request(link, headers = headers)
       try:
-             page_open = urlopen(req)
+          page_open = urlopen(req)
       except HTTPError, e:
-             api = False
+          api = False
       except URLError, e:
-             api = False
+          api = False
       else:
-             api = True
+          api = True
               
         if api == True:
  
