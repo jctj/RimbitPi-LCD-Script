@@ -66,43 +66,49 @@ def main():
     #Supported currencies are usd eur cny cad rub btc
     currency = "usd"
 
-    #RPC getinfo
-    info = access.getinfo()
-
-    #Change info to string for future searching
-    getinfo = "'"+str(info)+"'"
-
-    #Used to determin lock state
-    locked = "You cannot earn interest until you unlock your wallet"
-    encryptedunlocked ="unlocked_until"
-
     #Zero values show as "0E-8"
     zero = "0E-8"
 
-    #Check for lock status
-    if locked in getinfo:
-      status = "Locked"
-    elif encryptedunlocked in getinfo:
-      status = "Unlocked"
-    else:
-      status = "Not Encrypted"
-    #Define split based on locked or unlocked wallet
-    if status == "Locked":
-      a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo, pp, qq, rr, ss, tt, uu, vv, ww, xx, yy  = getinfo.split()
+    #RPC getinfo
+    try:
+      info = access.getinfo()
 
-      #When locked "NewMint" info is at split qq
-      newmint = qq
-      connectedpeers = b
-    elif status == "Unlocked":
-      a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo, pp, qq,  = getinfo.split()
+      #Change info to string for future searching
+      getinfo = "'"+str(info)+"'"
 
-      #When Unlocked "NewMint info is at split ii
-      newmint = ii
-      connectedpeers  = b
-    else:
-      a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo  = getinfo.split()
-      newmint = ii
-      connectedpeers  = b
+      #Used to determin lock state
+      locked = "You cannot earn interest until you unlock your wallet"
+      encryptedunlocked ="unlocked_until"
+
+      #Check for lock status
+      if locked in getinfo:
+        status = "Locked"
+      elif encryptedunlocked in getinfo:
+        status = "Unlocked"
+      else:
+        status = "Not Encrypted"
+      #Define split based on locked or unlocked wallet
+      if status == "Locked":
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo, pp, qq, rr, ss, tt, uu, vv, ww, xx, yy  = getinfo.split()
+
+       #When locked "NewMint" info is at split qq
+        newmint = qq
+        connectedpeers = b
+      elif status == "Unlocked":
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo, pp, qq,  = getinfo.split()
+
+        #When Unlocked "NewMint info is at split ii
+        newmint = ii
+        connectedpeers  = b
+      else:
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo  = getinfo.split()
+        newmint = ii
+        connectedpeers  = b
+
+    except:
+      status = "Wallet Error"
+      newmint = "Wallet Error"
+      connectedpeers = "Wallet Error"
 
     #Checks to see if newmint is "0E-8"  
     if zero in newmint:
@@ -111,83 +117,74 @@ def main():
       mint = str(newmint)
 
     #Remove "," from connectedpeers
-    peers = connectedpeers.replace(",","")  
+    try:
+      peers = connectedpeers.replace(",","")
+    except:
+      peers = "Wallet Error"
+
 
     #RPC getblocks
-    blocks = access.getblockcount()
+    try:
+      blocks = access.getblockcount()
+    except:
+      blocks = "Wallet Error"
 
     #RPC getbalance
-    totalbalance = access.getbalance()
-    balance = str(totalbalance)
-    if zero in balance:
-      amount = "0"
-    else:
-      amount = str(balance)
-
-    #Test Internet connection  
-    hostname = "coinmarketcap-nexuist.rhcloud.com"
-    response = os.system("ping -c 1 " + hostname)
-    if response == 0:
-
-      #Check API Server Status
-      user_agent = 'Mozilla/20.0.1 (compatible; MSIE 5.5; Windows NT)'
-      headers = { 'User-Agent':user_agent }
-      link = 'http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price'
-      req = Request(link, headers = headers)
-      try:
-          page_open = urlopen(req)
-      except HTTPError, e:
-          api = False
-      except URLError, e:
-          api = False
+    try:
+      totalbalance = access.getbalance()
+      balance = str(totalbalance)
+      if zero in balance:
+        amount = "0"
       else:
-          api = True
-              
-      if api == True:
+        amount = str(balance)
+    except:
+      amount = "Error"
+
+    try:
  
-          #Find current trading price of RBT
-          coincap = url = "http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price"
-          req = urllib2.Request(url)
-          opener = urllib2.build_opener()
-          f = opener.open(req)
-          json = simplejson.load(f)
+      #Find current trading price of RBT
+      coincap = url = "http://coinmarketcap-nexuist.rhcloud.com/api/rbt/price"
+      req = urllib2.Request(url)
+      opener = urllib2.build_opener()
+      f = opener.open(req)
+      json = simplejson.load(f)
     
-          if currency == "usd":
-            abv = " USD"
-            price = json.get('usd')
-          elif currency == "eur":
-            abv = " EUR"
-            price = json.get('eur')
-          elif currency == "cny":
-            abv = " CNY"
-            price = json.get('cny')
-          elif currency == "cad":
-            abv = " CAD"
-            price = json.get('cad')
-          elif currency == "rub":
-            abv = " RUB"
-            price = json.get('rub')
-          elif currency == "btc":
-            abv = " BTC"
-            price = json.get('btc')
-          else:
-            abv = " ???"
-            price = "Incorrect Currency"
-
+      if currency == "usd":
+        abv = " USD"
+        price = json.get('usd')
+      elif currency == "eur":
+        abv = " EUR"
+        price = json.get('eur')
+      elif currency == "cny":
+        abv = " CNY"
+        price = json.get('cny')
+      elif currency == "cad":
+        abv = " CAD"
+        price = json.get('cad')
+      elif currency == "rub":
+         abv = " RUB"
+         price = json.get('rub')
+      elif currency == "btc":
+         abv = " BTC"
+         price = json.get('btc')
       else:
-       abv = " "
-       price = "API DOWN"
-          
+        abv = " ???"
+        price = "Incorrect Currency"
 
-    else:
+
+    except:
       abv = " "
-      price = "Check WAN"
+      price = "ERROR"
 
     #Find IP address of acctive network interface
-    nic = ni.gateways()['default'][ni.AF_INET][1]
-    ni.ifaddresses(nic)
-    ip = ni.ifaddresses(nic)[2][0]['addr']
+    try:
+      nic = ni.gateways()['default'][ni.AF_INET][1]
+      ni.ifaddresses(nic)
+      ip = ni.ifaddresses(nic)[2][0]['addr']
     
+    except:
+      ip = "No Network"
+
     lcd_init()
 
     GPIO.output(LED_ON, True)
