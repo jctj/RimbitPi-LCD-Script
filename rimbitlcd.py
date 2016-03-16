@@ -11,8 +11,6 @@ GPIO.setwarnings (False)
 GPIO.setup (4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup (17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-
-
 def runlcd():
 	infolcd()
 
@@ -33,7 +31,6 @@ def main():
 	backup.join()
 
 	main()
-
 
 if (__name__ == "__main__"):
 	main()
