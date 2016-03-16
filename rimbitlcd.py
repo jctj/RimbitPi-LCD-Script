@@ -25,9 +25,6 @@ def main():
 
 	info = Process(target=runlcd)
 
-	# if (info.is_alive() == True):
-	# 	pass
-	# else:	
 	info.start()
 
 	while (info.is_alive() == True):
