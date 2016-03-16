@@ -59,7 +59,7 @@ def shutdown():
 		lcd_byte(LCD_LINE_2, LCD_CMD)
 		lcd_string("Shutting Down",2)
 		
-		time.sleep(3)
+		time.sleep(2)
 		
 		lcd_init()
 
