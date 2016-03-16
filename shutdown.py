@@ -58,6 +58,10 @@ def shutdown():
 		lcd_string("Pi Wallet",2)
 		lcd_byte(LCD_LINE_2, LCD_CMD)
 		lcd_string("Shutting Down",2)
+		
+		time.sleep(3)
+		
+		lcd_init()
 
 	oldButtonState1 = buttonState1
 
