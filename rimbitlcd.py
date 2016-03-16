@@ -5,11 +5,12 @@ from lcd import infolcd
 from backup import runbackup
 import RPi.GPIO as GPIO
 import time
+from shutdown import shutdown
 
 GPIO.setmode (GPIO.BCM)
 GPIO.setwarnings (False)
 GPIO.setup (4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup (17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup (3, GPIO.IN)
 
 def runlcd():
 	infolcd()
@@ -17,18 +18,29 @@ def runlcd():
 def startbackup():
 	runbackup()
 
+def startshutdown():
+	shutdown()
+
 def main():
+
 	info = Process(target=runlcd)
+
+	# if (info.is_alive() == True):
+	# 	pass
+	# else:	
 	info.start()
 
-	print "Press Button 4 to Run Backup"
-	GPIO.wait_for_edge(4, GPIO.FALLING)
-	info.terminate()
-	time.sleep(0.5)
+	while (info.is_alive() == True):
+		if(GPIO.input(4) == 0):
+			info.terminate()
+			time.sleep(0.5)
+			startbackup()
+			main()
 
-	backup = Process(target=startbackup)
-	backup.start()
-	backup.join()
+		if(GPIO.input(3) == 0):
+			info.terminate()
+			time.sleep(0.5)
+			startshutdown()
 
 	main()
 

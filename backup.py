@@ -32,7 +32,6 @@ E_DELAY = 0.00005
 
 
 def runbackup():
-  while True:
 
     access = AuthServiceProxy("http://rimbitrpc:rimbitrpc@127.0.0.1:8709")
     date = strftime("%Y%m%d%H%M%S", gmtime())
@@ -47,27 +46,35 @@ def runbackup():
     time.sleep(0.25)
     GPIO.output(LED_ON, True)
     time.sleep(0.25)
-    
-    lcd_byte(LCD_LINE_1, LCD_CMD)
-    lcd_string("Pi Wallet",2)
-    lcd_byte(LCD_LINE_2, LCD_CMD)
-    lcd_string("Backing Up",2)
-    
-    os.system ("sudo mount -t vfat /dev/sda1 /mnt/usb")
-    time.sleep(1)
-    access.backupwallet (dir + date + '.bak')
-    os.system (move)
-    time.sleep(1)
-    os.system ('sudo umount /mnt/usb')
       
-    lcd_byte(LCD_LINE_1, LCD_CMD)
-    lcd_string("Backup Complete",2)
-    lcd_byte(LCD_LINE_2, LCD_CMD)
-    lcd_string("Remove USB",2)
+    try:
+      lcd_byte(LCD_LINE_1, LCD_CMD)
+      lcd_string("Pi Wallet",2)
+      lcd_byte(LCD_LINE_2, LCD_CMD)
+      lcd_string("Backing Up",2)
+      
+      os.system ("sudo mount -t vfat /dev/sda1 /mnt/usb")
+      time.sleep(1)
+      access.backupwallet (dir + date + '.bak')
+      os.system (move)
+      time.sleep(1)
+      os.system ('sudo umount /mnt/usb')
+        
+      lcd_byte(LCD_LINE_1, LCD_CMD)
+      lcd_string("Backup Complete",2)
+      lcd_byte(LCD_LINE_2, LCD_CMD)
+      lcd_string("Remove USB",2)
 
-    time.sleep(2)
+      time.sleep(2)
 
-    sys.exit()
+
+    except:
+      lcd_byte(LCD_LINE_1, LCD_CMD)
+      lcd_string("Backup Failed",2)
+      lcd_byte(LCD_LINE_2, LCD_CMD)
+      lcd_string("Check Wallet",2)
+
+      time.sleep(2)
 
 def lcd_init():
   GPIO.setwarnings(False)
