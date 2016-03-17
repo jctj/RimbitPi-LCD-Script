@@ -58,6 +58,8 @@ def runbackup():
         lcd_string("Pi Wallet",2)
         lcd_byte(LCD_LINE_2, LCD_CMD)
         lcd_string("Backing Up",2)
+
+        os.system ("sudo umount /dev/sda1")
         
         os.system ("sudo mount -t vfat /dev/sda1 /mnt/usb")
         time.sleep(1)
