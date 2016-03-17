@@ -37,36 +37,53 @@ def runbackup():
     date = strftime("%Y%m%d%H%M%S", gmtime())
     dir = '/home/pi/' 
     move = 'sudo mv /home/pi/' + (date) + '.bak' + ' ' + '/mnt/usb'
-    
-    lcd_init()
+    savedfile = '/mnt/usb/' + (date) + '.bak'
 
-    GPIO.output(LED_ON, True)
-    time.sleep(0.25)
-    GPIO.output(LED_ON, False)
-    time.sleep(0.25)
-    GPIO.output(LED_ON, True)
-    time.sleep(0.25)
-      
+    if (os.path.exists("/mnt/usb") == False):
+      os.system ('sudo mkdir /mnt/usb')
+    
     try:
-      lcd_byte(LCD_LINE_1, LCD_CMD)
-      lcd_string("Pi Wallet",2)
-      lcd_byte(LCD_LINE_2, LCD_CMD)
-      lcd_string("Backing Up",2)
-      
-      os.system ("sudo mount -t vfat /dev/sda1 /mnt/usb")
-      time.sleep(1)
-      access.backupwallet (dir + date + '.bak')
-      os.system (move)
-      time.sleep(1)
-      os.system ('sudo umount /mnt/usb')
+      lcd_init()
+
+      GPIO.output(LED_ON, True)
+      time.sleep(0.25)
+      GPIO.output(LED_ON, False)
+      time.sleep(0.25)
+      GPIO.output(LED_ON, True)
+      time.sleep(0.25)
+
+      if (os.path.exists("/dev/sda1") == True):
         
-      lcd_byte(LCD_LINE_1, LCD_CMD)
-      lcd_string("Backup Complete",2)
-      lcd_byte(LCD_LINE_2, LCD_CMD)
-      lcd_string("Remove USB",2)
+        lcd_byte(LCD_LINE_1, LCD_CMD)
+        lcd_string("Pi Wallet",2)
+        lcd_byte(LCD_LINE_2, LCD_CMD)
+        lcd_string("Backing Up",2)
+        
+        os.system ("sudo mount -t vfat /dev/sda1 /mnt/usb")
+        time.sleep(1)
+        access.backupwallet (dir + date + '.bak')
+        os.system (move)
+        time.sleep(1)
+
+        if (os.path.exists(savedfile) == True):
+          lcd_byte(LCD_LINE_1, LCD_CMD)
+          lcd_string("Backup Complete",2)
+          lcd_byte(LCD_LINE_2, LCD_CMD)
+          lcd_string("Remove USB",2)
+
+        else:
+          lcd_byte(LCD_LINE_1, LCD_CMD)
+          lcd_string("Backup Failed",2)
+          lcd_byte(LCD_LINE_2, LCD_CMD)
+          lcd_string("Check USB",2)
+
+      else:
+          lcd_byte(LCD_LINE_1, LCD_CMD)
+          lcd_string("Backup Failed",2)
+          lcd_byte(LCD_LINE_2, LCD_CMD)
+          lcd_string("No USB Detected",2)
 
       time.sleep(2)
-
 
     except:
       lcd_byte(LCD_LINE_1, LCD_CMD)
@@ -74,7 +91,9 @@ def runbackup():
       lcd_byte(LCD_LINE_2, LCD_CMD)
       lcd_string("Check Wallet",2)
 
-      time.sleep(2)
+    os.system ('sudo umount /mnt/usb')
+
+    time.sleep(2)
 
 def lcd_init():
   GPIO.setwarnings(False)
